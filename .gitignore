@@ -2,3 +2,5 @@
 __pycache__
 README.html
 README.txt
+pb_tool.cfg
+Makefile
