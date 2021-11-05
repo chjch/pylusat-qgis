@@ -27,7 +27,7 @@ tags=python, land use, suitability analysis, GIS, planning, planning support sys
 
 homepage=https://github.com/chjch/pylusat-qgis/
 category=Plugins
-icon=qgis_processing/icons/icon.svg
+icon=qgis_processing/icons/icon.png
 # experimental flag
 experimental=False
 
