@@ -27,7 +27,9 @@ echo %~dp0
 
 python -m pip install --upgrade pip
 python -m pip install pipwin
+rem pipwin is an alternitive fro pip and conda that fit better in QGIS.
 python -m pipwin refresh
+rem You can force a cache rebuild using refresh. 
 python -m pipwin install gdal
 python -m pipwin install fiona
 python -m pipwin install rtree
