@@ -8,16 +8,16 @@ allow easy access and better integration into the QGIS _processing framework_.
 
 ![pylusatq](screenshot/pylusatq_native.png)
 
-For more information of PyLUSAT toolkit: https://github.com/chjch/pylusat
+For more information of PyLUSAT toolkit: https://github.com/chjch/pylusat or https://pypi.org/project/pylusat/
 
 ## Requirements
-- _Recommended Windows edition_: Windows 7, Windows 10.
-- *Recommended QGIS version*: 3.16 or higher.
+- Windows (Windows 7, Windows 10 recommended) or MacOS.
+- *QGIS version* 3.16 or higher (recommended).
 
 ## Installation
 
-### 1. Set up <a href="https://pypi.org/project/pylusat/">PyLUSAT</a>
-
+### 1. Set up PyLUSAT
+**In Windows:**
 1. We suggest two ways to set up your computer for PyLUSAT.<br>
    **For beginners:** <ol type="a">
       <li> Visit <a href="https://github.com/chjch/pylusat-qgis">PyLUSAT 
@@ -52,6 +52,9 @@ For more information of PyLUSAT toolkit: https://github.com/chjch/pylusat
       <b>N</b> for short term release.</li>
    </ol>
 3. Press **Enter** key and wait for the installation to complete.
+
+**In MacOS:**
+Use `pip install pylusat` in Python Command Prompt of **QGIS**.
 
 ### 2. Install PyLUSAT plugin
 1. Download **PyLUSAT plugin**
