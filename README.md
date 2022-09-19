@@ -59,17 +59,8 @@ For more information of PyLUSAT toolkit: https://github.com/chjch/pylusat or htt
 **In macOS:**
 Use `pip install pylusat` in Python Command Prompt of **QGIS**.
 
-### 2. Install PyLUSAT plugin
+### 2. Install PyLUSATQ plugin
 
-1. Download **PyLUSAT plugin**
-   from https://plugins.qgis.org/plugins/pylusatq/
-2. Find **Plugins** on the top panel in your **QGIS Desktop**,
-   Click **Manage and install plugins...**
-3. In **Install from ZIP** interface,
-   browse and select the PyLUSAT ZIP file you download.
-4. Click Install Plugin, once finished, restart QGIS.
-   > **Note:**<br>
-   > Once you click **Install Plugin**, you might see a pump-up window
-   > noticing "Couldn't load plugin pylusatq".
-   > Don't worry, the installation will succeed after you restart QGIS.
-5. Now you can find PyLUSAT tools in **Processing Toolbox** panel.
+- Go to **Plugins** -> **Manage and Install Plugins**.
+- In the **Search** bar, type **PyLUSATQ** (be sure to CHECK **Show also experimental plugins** in the **Settings**).
+- Click **Install Experimental Plugin** to install PyLUSATQ.
