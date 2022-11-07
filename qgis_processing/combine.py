@@ -7,13 +7,14 @@ from pylusat.base import RasterManager
 from pylusat.geotools import combine
 from rasterio.shutil import copy
 
-class RasterCombine(QgsProcessingAlgorithm):
-    INPUT = "INPUT" # defining variable for first input
-    INPUT2 = "INPUT2" # defining variable for second input
-    OUTPUT = "OUTPUT" # defining variable for output
-    ATT = "ATT" # output attribute table for combined rasters
 
-    def tr(self, string, context=''): # method to translate strings
+class RasterCombine(QgsProcessingAlgorithm):
+    INPUT = "INPUT"  # defining variable for first input
+    INPUT2 = "INPUT2"  # defining variable for second input
+    OUTPUT = "OUTPUT"  # defining variable for output
+    ATT = "ATT"  # output attribute table for combined rasters
+
+    def tr(self, string, context=''):   # method to translate strings
         if context == '':
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
@@ -24,13 +25,13 @@ class RasterCombine(QgsProcessingAlgorithm):
     def groupId(self):
         return "overlay"
 
-    def name(self): # name of method
+    def name(self):  # name of method
         return "RasterCombine"
 
-    def displayName(self): # name of method that will be displayed to the user
+    def displayName(self):  # name of method that will be displayed to the user
         return self.tr("Raster Combine")
 
-    def shortHelpString(self): # html document that explains what the tool is
+    def shortHelpString(self):  # html document that explains what the tool is
         return self.tr("Combines multiple rasters by their unique combinations.")
 
     def createInstance(self):
@@ -40,21 +41,21 @@ class RasterCombine(QgsProcessingAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter( # adding first parameter to the qgis gui
-            QgsProcessingParameterRasterLayer( # raster layer is INPUT
+        self.addParameter(  # adding first parameter to the qgis gui
+            QgsProcessingParameterRasterLayer(  # raster layer is INPUT
                 self.INPUT,
                 self.tr('Input raster file path')
             )
         )
-
-        self.addParameter( # adding second parameter to the qgis gui
-            QgsProcessingParameterRasterLayer( # raster layer is INPUT2
+        # adding second parameter to the qgis gui
+        self.addParameter(
+            QgsProcessingParameterRasterLayer(  # raster layer is INPUT2
                 self.INPUT2,
                 self.tr('Input raster file path')
             )
         )
-
-        self.addParameter( # adding parameter for output file path to qgis gui
+        # adding parameter for output file path to qgis gui
+        self.addParameter(
             QgsProcessingParameterRasterDestination(
                 self.OUTPUT,
                 self.tr('File path for output raster')
@@ -68,7 +69,7 @@ class RasterCombine(QgsProcessingAlgorithm):
             )
         )
 
-    def processAlgorithm(self, parameters, context, feedback): # actual script
+    def processAlgorithm(self, parameters, context, feedback):  # processing
         in_ras1 = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         in_ras1_path = in_ras1.dataProvider().dataSourceUri()
         in_ras2 = self.parameterAsRasterLayer(parameters, self.INPUT2, context)
@@ -83,8 +84,7 @@ class RasterCombine(QgsProcessingAlgorithm):
         combined_obj = combine(new_obj1, new_obj2)
 
         out_ras = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        copy(combined_obj[0], out_ras)
 
-        output_layer = copy(combined_obj[0], out_ras)
-
-        return {self.OUTPUT: output_layer,
+        return {self.OUTPUT: out_ras,
                 self.ATT: combined_obj[1]}
