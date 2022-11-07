@@ -6,8 +6,8 @@
  -----------
  The QGIS plugin for the PyLUSAT package.
  ------------
-        begin                : 2021-10-02
-        copyright            : (C) 2021 by Changjie chen
+        begin                : 2022-11-02
+        copyright            : (C) 2022 by Changjie chen
         email                : chj.chen@ufl.edu
  ***************************************************************************/
 
@@ -22,8 +22,8 @@
 """
 
 __author__ = 'Changjie chen'
-__date__ = '2021-10-02'
-__copyright__ = '(C) 2021 by Changjie chen'
+__date__ = '2022-11-02'
+__copyright__ = '(C) 2022 by Changjie chen'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
@@ -49,6 +49,8 @@ from .linear_rescale import LinearRescale
 from .ahp import AHP
 from .weighted_sum import WeightedSum
 from .identify_by_ranking import IdentifyByRanking
+from .gridify import Gridify
+from .raster_combine import RasterCombine
 from .pylusatq_utils import pylusatq_icon
 
 
@@ -71,7 +73,9 @@ class PyLUSATQProvider(QgsProcessingProvider):
                 LinearRescale.__name__: LinearRescale(),
                 AHP.__name__: AHP(),
                 WeightedSum.__name__: WeightedSum(),
-                IdentifyByRanking.__name__: IdentifyByRanking()}
+                IdentifyByRanking.__name__: IdentifyByRanking(),
+                Gridify.__name__: Gridify(),
+                RasterCombine.__name__: RasterCombine()}
 
     def loadAlgorithms(self):
         for alg in self.algs_dict().values():
