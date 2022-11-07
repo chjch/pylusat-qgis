@@ -6,8 +6,8 @@
  -----------
  The QGIS plugin for the PyLUSAT package.
  ------------
-        begin                : 2021-10-02
-        copyright            : (C) 2021 by Changjie chen
+        begin                : 2022-11-02
+        copyright            : (C) 2022 by Changjie chen
         email                : chj.chen@ufl.edu
  ***************************************************************************/
 
