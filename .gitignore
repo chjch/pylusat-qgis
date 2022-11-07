@@ -6,3 +6,4 @@ pb_tool.cfg
 Makefile
 *.zip
 .vscode/
+.DS_Store
