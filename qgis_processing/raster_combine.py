@@ -6,6 +6,7 @@ from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
 from pylusat.base import RasterManager
 from pylusat.geotools import combine
 from rasterio.shutil import copy
+from .pylusatq_utils import pylusatq_icon
 
 
 class RasterCombine(QgsProcessingAlgorithm):
@@ -13,6 +14,10 @@ class RasterCombine(QgsProcessingAlgorithm):
     INPUT2 = "INPUT2"  # defining variable for second input
     OUTPUT = "OUTPUT"  # defining variable for output
     ATT = "ATT"  # output attribute table for combined rasters
+
+    def icon(self):
+        return pylusatq_icon()
+
 
     def tr(self, string, context=''):   # method to translate strings
         if context == '':

@@ -5,6 +5,8 @@ from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorDestination)
 from pylusat.geotools import gridify
 import geopandas as gpd
+from .pylusatq_utils import pylusatq_icon
+
 
 
 class Gridify(QgsProcessingAlgorithm):
@@ -14,6 +16,9 @@ class Gridify(QgsProcessingAlgorithm):
     NUM_COLS = "NUM_COLS"  # defining variable for number of columns
     NUM_ROWS = "NUM_ROWS"  # defining variable for number of rows
     OUTPUT = "OUTPUT"
+
+    def icon(self):
+        return pylusatq_icon()
 
     def tr(self, string, context=''):  # method to translate strings
         if context == '':
