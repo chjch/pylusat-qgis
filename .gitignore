@@ -4,6 +4,5 @@ README.html
 README.txt
 pb_tool.cfg
 Makefile
-*.zip
 .vscode/
 .DS_Store
