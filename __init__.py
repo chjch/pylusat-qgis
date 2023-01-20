@@ -34,5 +34,5 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :type iface: QgsInterface
     """
     #
-    from .qgis_processing.pylusatq import PyLUSATQProviderPlugin
+    from qgis_processing.pylusatq import PyLUSATQProviderPlugin
     return PyLUSATQProviderPlugin()
