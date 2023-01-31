@@ -22,6 +22,7 @@
 """
 
 import os
+import sys
 
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -34,6 +35,8 @@ from qgis.core import (QgsProcessingAlgorithm,
 import numpy as np
 import codecs
 from pylusat import utils
+
+sys.path.append("..")
 
 from .pylusatq_utils import pylusatq_icon
 

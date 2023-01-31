@@ -34,6 +34,9 @@ from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
                        QgsProcessingParameterString,
                        QgsProcessingParameterEnum)
 from pylusat import distance
+
+sys.path.append("..")
+
 from .pylusatq_utils import pylusatq_icon
 
 
