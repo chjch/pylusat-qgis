@@ -25,6 +25,8 @@ __author__ = 'Changjie chen'
 __date__ = '2021-10-02'
 __copyright__ = '(C) 2021 by Changjie chen'
 
+from .qgis_processing.pylusatq import PyLUSATQProviderPlugin
+
 
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
@@ -34,5 +36,4 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :type iface: QgsInterface
     """
     #
-    from qgis_processing.pylusatq import PyLUSATQProviderPlugin
     return PyLUSATQProviderPlugin()
