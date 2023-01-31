@@ -35,9 +35,6 @@ from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
                        QgsProcessingParameterString,
                        QgsProcessingParameterVectorDestination)
 from pylusat import zonal
-
-sys.path.append("..")
-
 from .pylusatq_utils import pylusatq_icon
 
 

@@ -22,16 +22,13 @@
 """
 
 # PyLUSATQ utilities library
-import os
-import sys
 
+import os
 
 from collections import defaultdict
 import pandas as pd
 from shapely import wkt
 import geopandas as gpd
-
-sys.path.append("..")
 
 from qgis.core import QgsVectorLayer
 from qgis.PyQt.QtGui import QIcon

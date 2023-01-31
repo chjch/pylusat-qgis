@@ -37,9 +37,6 @@ from qgis.core import (QgsProcessing, QgsField, QgsFeature, QgsFeatureSink,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSink)
-
-sys.path.append("..")
-
 from .pylusatq_utils import pylusatq_icon
 
 

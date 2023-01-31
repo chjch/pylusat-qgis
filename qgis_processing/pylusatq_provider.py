@@ -29,7 +29,6 @@ __copyright__ = '(C) 2022 by Changjie chen'
 
 __revision__ = '$Format:%H$'
 
-import sys
 import os
 
 from qgis.core import QgsProcessingProvider
@@ -52,9 +51,6 @@ from .weighted_sum import WeightedSum
 from .identify_by_ranking import IdentifyByRanking
 from .gridify import Gridify
 from .raster_combine import RasterCombine
-
-sys.path.append("..")
-
 from .pylusatq_utils import pylusatq_icon
 
 

@@ -5,9 +5,6 @@ from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorDestination)
 from pylusat.geotools import gridify
 import geopandas as gpd
-
-sys.path.append("..")
-
 from .pylusatq_utils import pylusatq_icon
 
 

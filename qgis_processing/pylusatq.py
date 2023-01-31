@@ -34,9 +34,6 @@ import sys
 import inspect
 
 from qgis.core import QgsApplication
-
-sys.path.append("..")
-
 from .pylusatq_provider import PyLUSATQProvider
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]

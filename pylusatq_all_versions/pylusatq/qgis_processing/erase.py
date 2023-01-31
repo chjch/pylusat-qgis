@@ -4,9 +4,6 @@ from PyQt5.QtCore import QCoreApplication
 from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorDestination)
-
-sys.path.append("..")
-
 from pylusat import geotools
 
 
