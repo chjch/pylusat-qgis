@@ -6,6 +6,7 @@ from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorDestination)
 from pylusat import geotools
 
+sys.path.append("..")
 
 class Erase(QgsProcessingAlgorithm):
     INPUT = "INPUT"

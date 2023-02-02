@@ -36,6 +36,9 @@ from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterString)
 from pylusat import geotools
+
+sys.path.append("..")
+
 from .pylusatq_utils import pylusatq_icon
 
 

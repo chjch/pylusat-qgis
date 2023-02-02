@@ -29,6 +29,8 @@ __copyright__ = '(C) 2021 by Changjie chen'
 
 __revision__ = '$Format:%H$'
 
+import sys
+
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.core import (QgsProcessing, QgsField, QgsFeature, QgsFeatureSink,
                        QgsProcessingAlgorithm,
@@ -37,6 +39,9 @@ from qgis.core import (QgsProcessing, QgsField, QgsFeature, QgsFeatureSink,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSink)
+
+sys.path.append("..")
+
 from .pylusatq_utils import pylusatq_icon
 
 
