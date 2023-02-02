@@ -35,6 +35,9 @@ from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterString)
 from pylusat import rescale
+
+sys.path.append("..")
+
 from .pylusatq_utils import pylusatq_icon
 
 

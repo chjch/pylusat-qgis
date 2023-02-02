@@ -29,11 +29,14 @@ __copyright__ = '(C) 2022 by Changjie chen'
 
 __revision__ = '$Format:%H$'
 
-import os
 import sys
+import os
 import inspect
 
 from qgis.core import QgsApplication
+
+sys.path.append("..")
+
 from .pylusatq_provider import PyLUSATQProvider
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]

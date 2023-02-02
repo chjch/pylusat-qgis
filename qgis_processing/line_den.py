@@ -31,6 +31,9 @@ from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
 import sys
 import os
 from pylusat import density, base
+
+sys.path.append("..")
+
 from .pylusatq_utils import pylusatq_icon
 
 

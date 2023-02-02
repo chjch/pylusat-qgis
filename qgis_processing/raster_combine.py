@@ -1,3 +1,6 @@
+
+import sys
+
 from PyQt5.QtCore import QCoreApplication
 from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
                        QgsProcessingParameterRasterLayer,
@@ -6,6 +9,9 @@ from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
 from pylusat.base import RasterManager
 from pylusat.geotools import combine
 from rasterio.shutil import copy
+
+sys.path.append("..")
+
 from .pylusatq_utils import pylusatq_icon
 
 

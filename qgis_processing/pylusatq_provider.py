@@ -30,6 +30,9 @@ __copyright__ = '(C) 2022 by Changjie chen'
 __revision__ = '$Format:%H$'
 
 import os
+import sys
+
+sys.path.append("..")
 
 from qgis.core import QgsProcessingProvider
 from qgis.PyQt.QtGui import QIcon
