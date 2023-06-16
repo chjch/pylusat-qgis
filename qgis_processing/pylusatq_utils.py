@@ -237,8 +237,9 @@ class PyLUSATQUtils:
 
         df['geometry'] = df['geometry'].apply(wkt.loads)
         if qgis_vector_lyr.wkbType() == 6:   # if geometry is MultiPolygon
+            print(df["geometry"])
             df['geometry'] = df['geometry'].apply(
-                lambda x: x[0] if len(x) == 1 else x
+                lambda x: x.geoms[0] if len(x.geoms) == 1 else x
             )
         return gpd.GeoDataFrame(df, crs=qgis_vector_lyr.crs().toWkt(),
                                 geometry='geometry')

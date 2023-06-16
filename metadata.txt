@@ -6,7 +6,7 @@
 name=PyLUSATQ
 qgisMinimumVersion=3.0
 description=The QGIS plugin for the PyLUSAT package.
-version=0.1.0
+version=0.2.1
 author=Changjie chen
 email=chj.chen@ufl.edu
 
