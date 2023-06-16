@@ -92,7 +92,7 @@ class Gridify(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterVectorDestination(
                 self.OUTPUT,
-                self.tr('Output vector layer')
+                self.tr('Output grid')
             )
         )
 
