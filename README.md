@@ -7,7 +7,7 @@ This QGIS plugin provides interfaces to all functions in PyLUSAT to
 allow easy access and better integration into the QGIS _processing
 framework_.
 
-![pylusatq](screenshot/plugin_gui_mac.png)
+<img src="screenshot/plugin_gui_mac.png" alt="pylusatq" height="600"/>
 
 For more information of PyLUSAT toolkit: https://github.com/chjch/pylusat or https://pypi.org/project/pylusat/
 
