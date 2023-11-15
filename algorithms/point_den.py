@@ -39,7 +39,7 @@ from pylusat import base, density
 
 sys.path.append("..")
 
-from .pylusatq_utils import pylusatq_icon
+from pylusatq_utils import pylusatq_icon
 
 
 class PointDensity(QgsProcessingAlgorithm):

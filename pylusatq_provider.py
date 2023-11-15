@@ -2,7 +2,7 @@
 
 """
 /***************************************************************************
- PyLUSATQGIS
+ PyLUSATQ
  -----------
  The QGIS plugin for the PyLUSAT package.
  ------------
@@ -29,13 +29,7 @@ __copyright__ = '(C) 2022 by Changjie chen'
 
 __revision__ = '$Format:%H$'
 
-import os
-import sys
-
-sys.path.append("..")
-
 from qgis.core import QgsProcessingProvider
-from qgis.PyQt.QtGui import QIcon
 
 # import processing algorithms
 from .point_den import PointDensity
@@ -110,7 +104,7 @@ class PyLUSATQProvider(QgsProcessingProvider):
 
     def longName(self):
         """
-        Returns the a longer version of the provider name, which can include
+        Returns a longer version of the provider name, which can include
         extra details such as version numbers. E.g. "Lastools LIDAR tools
         (version 2.2.1)". This string should be localised. The default
         implementation returns the same string as name().

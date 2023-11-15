@@ -39,7 +39,7 @@ from pylusat import geotools
 
 sys.path.append("..")
 
-from .pylusatq_utils import pylusatq_icon
+from pylusatq_utils import pylusatq_icon
 
 
 class SpatialJoin(QgsProcessingAlgorithm):

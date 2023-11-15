@@ -2,7 +2,7 @@
 
 """
 /***************************************************************************
- PyLUSATQGIS
+ PyLUSATQ
  -----------
  The QGIS plugin for the PyLUSAT package.
  ------------
@@ -44,7 +44,6 @@ def pylusatq_icon():
 
 
 class StringParameter:
-
     def __init__(self, name, value):
         self.name = name
         self.value = value
@@ -55,20 +54,21 @@ class StringParameter:
             raise TypeError("'{}' must be a string.".format(self.name))
 
     def __repr__(self):
-        return "{}('{}', '{}')".format(self.__class__.__name__,
-                                       self.name, self.value)
+        return "{}('{}', '{}')".format(
+            self.__class__.__name__, self.name, self.value
+        )
 
     def __str__(self):
         return "'{}', '{}'".format(self.name, self.value)
 
 
 class StringParameterNumber(StringParameter):
-
     def __init__(self, name, value):
         super().__init__(name, value)
         if not self._validate_number():
-            raise ValueError("'{}' cannot be used as a "
-                             "valid number.".format(self.value))
+            raise ValueError(
+                "'{}' cannot be used as a " "valid number.".format(self.value)
+            )
 
     def _validate_number(self):
         try:
@@ -86,13 +86,13 @@ class StringParameterNumber(StringParameter):
 
 
 class StringParameterNumberList(StringParameter):
-
     def __init__(self, name, value):
         super().__init__(name, value)
         if not self._validate_number_list():
             raise ValueError(
                 "f'{self.value}' is not a valid number list "
-                "since {self.err}")
+                "since {self.err}"
+            )
 
     def _validate_number_list(self):
         try:
@@ -111,27 +111,32 @@ class StringParameterNumberList(StringParameter):
 
 
 class StringParameterInterval(StringParameter):
-
     def __init__(self, name, value):
         super().__init__(name, value)
         self._validate_interval()
 
     def _validate_interval(self):
         if "-" not in self.value:
-            raise ValueError("'{}' is not a valid interval. "
-                             "Use '-' to separate the start and "
-                             "the end of a interval.".format(self.value))
+            raise ValueError(
+                "'{}' is not a valid interval. "
+                "Use '-' to separate the start and "
+                "the end of a interval.".format(self.value)
+            )
         else:
             _interval = self.value.split("-")
             if len(_interval) != 2:
-                raise ValueError("'{}' is not a "
-                                 "valid interval.".format(self.value))
-            _start, _end = [StringParameterNumber('bound', _bound)
-                            for _bound in _interval]
+                raise ValueError(
+                    "'{}' is not a " "valid interval.".format(self.value)
+                )
+            _start, _end = [
+                StringParameterNumber("bound", _bound) for _bound in _interval
+            ]
             if _start.as_number >= _end.as_number:
-                raise ValueError("'{}' is not a valid interval. A interval's "
-                                 "start value must be smaller than "
-                                 "its end value.".format(self.value))
+                raise ValueError(
+                    "'{}' is not a valid interval. A interval's "
+                    "start value must be smaller than "
+                    "its end value.".format(self.value)
+                )
             else:
                 self.start = _start.as_number
                 self.end = _end.as_number
@@ -142,16 +147,17 @@ class StringParameterInterval(StringParameter):
 
 
 class StringParameterIntervalList(StringParameter):
-
     def __init__(self, name, value, enforce_ascending=False):
         super().__init__(name, value)
         self.enforce_ascending = enforce_ascending
         if not self._validate_interval_list():
-            raise ValueError("'{}' is not a valid definition, since '{}' "
-                             "is not a valid list of intervals. "
-                             "`if enforce_ascending == True`, make sure "
-                             "bounds of each interval follows an ascending "
-                             "order.".format(self.name, self.value))
+            raise ValueError(
+                "'{}' is not a valid definition, since '{}' "
+                "is not a valid list of intervals. "
+                "`if enforce_ascending == True`, make sure "
+                "bounds of each interval follows an ascending "
+                "order.".format(self.name, self.value)
+            )
 
     def _validate_interval_list(self):
         try:
@@ -161,6 +167,7 @@ class StringParameterIntervalList(StringParameter):
             ]
             if self.enforce_ascending:
                 from itertools import chain
+
                 chained_list = list(chain.from_iterable(self.interval_list))
                 assert sorted(chained_list) == chained_list
             return True
@@ -173,17 +180,20 @@ class StringParameterIntervalList(StringParameter):
 
 
 class StringParameterCategoryList(StringParameter):
-
     def __init__(self, name, value):
         super().__init__(name, value)
         if not self._validate_category_list():
-            raise ValueError("{} is not a valid category list "
-                             "since {}".format(self.value, self.err))
+            raise ValueError(
+                "{} is not a valid category list "
+                "since {}".format(self.value, self.err)
+            )
 
     def _validate_category_list(self):
         try:
-            self.category_list = [StringParameter("category", _.strip()).value
-                                  for _ in self.value.split(",")]
+            self.category_list = [
+                StringParameter("category", _.strip()).value
+                for _ in self.value.split(",")
+            ]
             return True
         except TypeError as err:
             self.err = err
@@ -195,7 +205,6 @@ class StringParameterCategoryList(StringParameter):
 
 
 class PyLUSATQUtils:
-
     def __init__(self):
         self.agg_dict = defaultdict(set)
 
@@ -224,22 +233,25 @@ class PyLUSATQUtils:
         return pd.DataFrame(attributes_list, columns=columns)
 
     @classmethod
-    def vector_to_gdf(cls, qgis_vector_lyr: QgsVectorLayer) -> gpd.GeoDataFrame:
+    def vector_to_gdf(
+        cls, qgis_vector_lyr: QgsVectorLayer
+    ) -> gpd.GeoDataFrame:
         feature_list = [
-            [cls._catch_null(attr) for attr in feature.attributes()] +
-            [feature.geometry().asWkt()]
+            [cls._catch_null(attr) for attr in feature.attributes()]
+            + [feature.geometry().asWkt()]
             for feature in qgis_vector_lyr.getFeatures()
         ]
 
         columns = cls.get_field_names(qgis_vector_lyr)
-        columns.append('geometry')
+        columns.append("geometry")
         df = pd.DataFrame(feature_list, columns=columns)
 
-        df['geometry'] = df['geometry'].apply(wkt.loads)
-        if qgis_vector_lyr.wkbType() == 6:   # if geometry is MultiPolygon
+        df["geometry"] = df["geometry"].apply(wkt.loads)
+        if qgis_vector_lyr.wkbType() == 6:  # if geometry is MultiPolygon
             print(df["geometry"])
-            df['geometry'] = df['geometry'].apply(
+            df["geometry"] = df["geometry"].apply(
                 lambda x: x.geoms[0] if len(x.geoms) == 1 else x
             )
-        return gpd.GeoDataFrame(df, crs=qgis_vector_lyr.crs().toWkt(),
-                                geometry='geometry')
+        return gpd.GeoDataFrame(
+            df, crs=qgis_vector_lyr.crs().toWkt(), geometry="geometry"
+        )

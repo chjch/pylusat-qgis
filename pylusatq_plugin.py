@@ -2,7 +2,7 @@
 
 """
 /***************************************************************************
- PyLUSATQGIS
+ PyLUSATQ
  -----------
  The QGIS plugin for the PyLUSAT package.
  ------------
@@ -35,9 +35,7 @@ import inspect
 
 from qgis.core import QgsApplication
 
-sys.path.append("..")
-
-from .pylusatq_provider import PyLUSATQProvider
+import pylusatq_provider
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
 
@@ -48,7 +46,7 @@ if cmd_folder not in sys.path:
 class PyLUSATQProviderPlugin:
 
     def __init__(self):
-        self.provider = PyLUSATQProvider()
+        self.provider = pylusatq_provider.PyLUSATQProvider()
 
     def initGui(self):
         QgsApplication.processingRegistry().addProvider(self.provider)

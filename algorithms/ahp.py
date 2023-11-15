@@ -21,7 +21,6 @@
  ***************************************************************************/
 """
 
-import os
 import sys
 
 from qgis.PyQt.QtCore import QCoreApplication
@@ -38,7 +37,7 @@ from pylusat import utils
 
 sys.path.append("..")
 
-from .pylusatq_utils import pylusatq_icon
+from pylusatq_utils import pylusatq_icon
 
 
 class AHP(QgsProcessingAlgorithm):

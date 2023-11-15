@@ -42,7 +42,7 @@ from qgis.core import (QgsProcessing, QgsField, QgsFeature, QgsFeatureSink,
 
 sys.path.append("..")
 
-from .pylusatq_utils import pylusatq_icon
+from pylusatq_utils import pylusatq_icon
 
 
 class IdentifyByRanking(QgsProcessingAlgorithm):

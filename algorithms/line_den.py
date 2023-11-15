@@ -34,7 +34,7 @@ from pylusat import density, base
 
 sys.path.append("..")
 
-from .pylusatq_utils import pylusatq_icon
+from pylusatq_utils import pylusatq_icon
 
 
 class LineDensity(QgsProcessingAlgorithm):

@@ -3,16 +3,14 @@ import sys
 from PyQt5.QtCore import QCoreApplication
 from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorDestination)
 from pylusat.geotools import gridify
 import os
-import geopandas as gpd
 
 sys.path.append("..")
 
-from .pylusatq_utils import pylusatq_icon
+from pylusatq_utils import pylusatq_icon
 
 
 class Gridify(QgsProcessingAlgorithm):
