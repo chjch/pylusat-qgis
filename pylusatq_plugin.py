@@ -35,7 +35,8 @@ import inspect
 
 from qgis.core import QgsApplication
 
-import pylusatq_provider
+from .pylusatq_provider import PyLUSATQProvider
+sys.path.append(".algorithms")
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
 
@@ -46,9 +47,10 @@ if cmd_folder not in sys.path:
 class PyLUSATQProviderPlugin:
 
     def __init__(self):
-        self.provider = pylusatq_provider.PyLUSATQProvider()
+        self.provider = PyLUSATQProvider()
 
     def initGui(self):
+        icon_path = os.path.join(os.path.dirname(__file__), 'icons', 'icon.png')
         QgsApplication.processingRegistry().addProvider(self.provider)
 
     def unload(self):

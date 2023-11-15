@@ -22,17 +22,17 @@
 """
 
 __author__ = 'Changjie chen'
-__date__ = '2021-10-02'
-__copyright__ = '(C) 2021 by Changjie chen'
+__date__ = '2023-11-07'
+__copyright__ = '(C) 2023 by Changjie chen'
 
 
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
-    """Load PyLUSATQG class from file PyLUSATQ.
+    """Load PyLUSATQ class from file PyLUSATQ.
 
     :param iface: A QGIS interface instance.
     :type iface: QgsInterface
     """
     #
-    from qgis_processing.pylusatq import PyLUSATQProviderPlugin
+    from .pylusatq_plugin import PyLUSATQProviderPlugin
     return PyLUSATQProviderPlugin()
