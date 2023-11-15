@@ -22,19 +22,17 @@
 """
 
 from PyQt5.QtCore import QCoreApplication
-from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterVectorDestination,
-                       QgsProcessingParameterEnum,
-                       QgsProcessingParameterDistance,
-                       QgsProcessingParameterString)
-import sys
-import os
+from qgis.core import (
+    QgsProcessing,
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterVectorDestination,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterDistance,
+    QgsProcessingParameterString,
+)
 from pylusat import density, base
-
-sys.path.append("..")
-
-from pylusatq_utils import pylusatq_icon
+from ..pylusatq_utils import pylusatq_icon
 
 
 class LineDensity(QgsProcessingAlgorithm):
@@ -43,14 +41,14 @@ class LineDensity(QgsProcessingAlgorithm):
     CELL_SIZE = "CELL_SIZE"
     SEARCH_RADIUS = "SEARCH_RADIUS"
     AREA_UNIT = "AREAL_UNIT"
-    OUTPUT_COLUMN = 'OUTPUT_COLUMN'
+    OUTPUT_COLUMN = "OUTPUT_COLUMN"
     OUTPUT = "OUTPUT"
 
     def icon(self):
         return pylusatq_icon()
 
-    def tr(self, string, context=''):
-        if context == '':
+    def tr(self, string, context=""):
+        if context == "":
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
 
@@ -67,7 +65,7 @@ class LineDensity(QgsProcessingAlgorithm):
         return self.tr("Density of Line Features")
 
     def shortHelpString(self):
-        html_doc = '''
+        html_doc = """
         <p>Calculate density of line features within the specified search \
         radius of each input polygon features.</p>
         
@@ -93,7 +91,7 @@ class LineDensity(QgsProcessingAlgorithm):
 
         <h3>Output</h3>
         <p>Output vector layer.</p>
-        '''
+        """
         return html_doc
 
     def createInstance(self):
@@ -102,101 +100,97 @@ class LineDensity(QgsProcessingAlgorithm):
     def __init__(self):
         super().__init__()
         self.area_unit = (
-            ('Square meters', self.tr('Square meters')),
-            ('Square kilometers', self.tr('Square kilometers')),
-            ('Hectares', self.tr('Hectares')),
-            ('Square feet', self.tr('Square feet')),
-            ('Square miles', self.tr('Square miles')),
-            ('Acres', self.tr('Acres'))
+            ("Square meters", self.tr("Square meters")),
+            ("Square kilometers", self.tr("Square kilometers")),
+            ("Hectares", self.tr("Hectares")),
+            ("Square feet", self.tr("Square feet")),
+            ("Square miles", self.tr("Square miles")),
+            ("Acres", self.tr("Acres")),
         )
 
     def initAlgorithm(self, config=None):
-
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.INPUT,
-                self.tr('Input layer'),
-                types=[QgsProcessing.TypeVectorAnyGeometry]
+                self.tr("Input layer"),
+                types=[QgsProcessing.TypeVectorAnyGeometry],
             )
         )
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.LINE,
-                self.tr('Line layer'),
-                types=[QgsProcessing.TypeVectorLine]
+                self.tr("Line layer"),
+                types=[QgsProcessing.TypeVectorLine],
             )
         )
         cell_size = QgsProcessingParameterDistance(
             self.CELL_SIZE,
-            self.tr('Cell size for rasterizing line features'),
+            self.tr("Cell size for rasterizing line features"),
             defaultValue=30,
             parentParameterName=self.LINE,
-            optional=True
+            optional=True,
         )
-        cell_size.setMetadata({
-            'widget_wrapper': {
-                'decimals': 0
-            }
-        })
+        cell_size.setMetadata({"widget_wrapper": {"decimals": 0}})
         self.addParameter(cell_size)
         search_radius = QgsProcessingParameterDistance(
             self.SEARCH_RADIUS,
-            self.tr('Search radius'),
-            parentParameterName=self.INPUT
+            self.tr("Search radius"),
+            parentParameterName=self.INPUT,
         )
-        search_radius.setMetadata({
-            'widget_wrapper': {
-                'decimals': 2
-            }
-        })
+        search_radius.setMetadata({"widget_wrapper": {"decimals": 2}})
         self.addParameter(search_radius)
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.AREA_UNIT,
-                self.tr('Area unit (for density value)'),
+                self.tr("Area unit (for density value)"),
                 options=[u[1] for u in self.area_unit],
-                defaultValue=0
+                defaultValue=0,
             )
         )
         self.addParameter(
             QgsProcessingParameterString(
                 name=self.OUTPUT_COLUMN,
-                description=self.tr('Output column name'),
+                description=self.tr("Output column name"),
             )
         )
         self.addParameter(
             QgsProcessingParameterVectorDestination(
-                self.OUTPUT,
-                self.tr('Output layer')
+                self.OUTPUT, self.tr("Output layer")
             )
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        source_lyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        source_lyr = self.parameterAsVectorLayer(
+            parameters, self.INPUT, context
+        )
         line_lyr = self.parameterAsVectorLayer(parameters, self.LINE, context)
         cell_size = self.parameterAsDouble(parameters, self.CELL_SIZE, context)
-        search_radius = self.parameterAsDouble(parameters,
-                                               self.SEARCH_RADIUS,
-                                               context)
-        area_unit = self.area_unit[self.parameterAsEnum(parameters,
-                                                        self.AREA_UNIT,
-                                                        context)][0]
-        output_clm = self.parameterAsString(parameters, self.OUTPUT_COLUMN, context)
-        output_file = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        search_radius = self.parameterAsDouble(
+            parameters, self.SEARCH_RADIUS, context
+        )
+        area_unit = self.area_unit[
+            self.parameterAsEnum(parameters, self.AREA_UNIT, context)
+        ][0]
+        output_clm = self.parameterAsString(
+            parameters, self.OUTPUT_COLUMN, context
+        )
+        output_file = self.parameterAsOutputLayer(
+            parameters, self.OUTPUT, context
+        )
 
-        sys.path.insert(1, os.path.dirname(os.path.realpath(__file__)))
-        from pylusatq_utils import PyLUSATQUtils
+        from ..pylusatq_utils import PyLUSATQUtils
 
         source_gdf = PyLUSATQUtils.vector_to_gdf(source_lyr)
         line_gdf = PyLUSATQUtils.vector_to_gdf(line_lyr)
-        
+
         if search_radius:
             search_radius = (
-                f'{search_radius} '
-                f'{base.GeoDataFrameManager(source_gdf).geom_unit_name}'
+                f"{search_radius} "
+                f"{base.GeoDataFrameManager(source_gdf).geom_unit_name}"
             )
 
-        source_gdf[output_clm] = density.of_line(source_gdf, line_gdf, cell_size,
-                                                 search_radius, area_unit)
+        source_gdf[output_clm] = density.of_line(
+            source_gdf, line_gdf, cell_size, search_radius, area_unit
+        )
         source_gdf.to_file(output_file)
         return {self.OUTPUT: output_file}

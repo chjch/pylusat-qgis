@@ -1,18 +1,14 @@
-
-import sys
-
 from PyQt5.QtCore import QCoreApplication
-from qgis.core import (QgsProcessingAlgorithm,
-                       QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterRasterDestination,
-                       QgsProcessingOutputString)
+from qgis.core import (
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterRasterDestination,
+    QgsProcessingOutputString,
+)
 from pylusat.base import RasterManager
 from pylusat.geotools import combine
 from rasterio.shutil import copy
-
-sys.path.append("..")
-
-from pylusatq_utils import pylusatq_icon
+from ..pylusatq_utils import pylusatq_icon
 
 
 class RasterCombine(QgsProcessingAlgorithm):
@@ -24,9 +20,8 @@ class RasterCombine(QgsProcessingAlgorithm):
     def icon(self):
         return pylusatq_icon()
 
-
-    def tr(self, string, context=''):   # method to translate strings
-        if context == '':
+    def tr(self, string, context=""):  # method to translate strings
+        if context == "":
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
 
@@ -43,7 +38,9 @@ class RasterCombine(QgsProcessingAlgorithm):
         return self.tr("Raster Combine")
 
     def shortHelpString(self):  # html document that explains what the tool is
-        return self.tr("Combines multiple rasters by their unique combinations.")
+        return self.tr(
+            "Combines multiple rasters by their unique combinations."
+        )
 
     def createInstance(self):
         return RasterCombine()
@@ -54,29 +51,25 @@ class RasterCombine(QgsProcessingAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(  # adding first parameter to the qgis gui
             QgsProcessingParameterRasterLayer(  # raster layer is INPUT
-                self.INPUT,
-                self.tr('Input raster file path')
+                self.INPUT, self.tr("Input raster file path")
             )
         )
         # adding second parameter to the qgis gui
         self.addParameter(
             QgsProcessingParameterRasterLayer(  # raster layer is INPUT2
-                self.INPUT2,
-                self.tr('Input raster file path')
+                self.INPUT2, self.tr("Input raster file path")
             )
         )
         # adding parameter for output file path to qgis gui
         self.addParameter(
             QgsProcessingParameterRasterDestination(
-                self.OUTPUT,
-                self.tr('File path for output raster')
+                self.OUTPUT, self.tr("File path for output raster")
             )
         )
 
         self.addOutput(
             QgsProcessingOutputString(
-                self.ATT,
-                self.tr('Attribute table for output raster')
+                self.ATT, self.tr("Attribute table for output raster")
             )
         )
 
@@ -97,5 +90,4 @@ class RasterCombine(QgsProcessingAlgorithm):
         out_ras = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         copy(combined_obj[0], out_ras)
 
-        return {self.OUTPUT: out_ras,
-                self.ATT: combined_obj[1]}
+        return {self.OUTPUT: out_ras, self.ATT: combined_obj[1]}

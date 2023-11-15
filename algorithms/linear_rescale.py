@@ -21,24 +21,22 @@
  ***************************************************************************/
 """
 
-__author__ = 'Changjie chen'
-__date__ = '2021-10-02'
-__copyright__ = '(C) 2021 by Changjie chen'
+__author__ = "Changjie chen"
+__date__ = "2021-10-02"
+__copyright__ = "(C) 2021 by Changjie chen"
 
-import sys
-import os
 from PyQt5.QtCore import QCoreApplication
-from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterVectorDestination,
-                       QgsProcessingParameterField,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingParameterString)
+from qgis.core import (
+    QgsProcessing,
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterVectorDestination,
+    QgsProcessingParameterField,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterString,
+)
 from pylusat import rescale
-
-sys.path.append("..")
-
-from pylusatq_utils import pylusatq_icon
+from ..pylusatq_utils import pylusatq_icon
 
 
 class LinearRescale(QgsProcessingAlgorithm):
@@ -54,8 +52,8 @@ class LinearRescale(QgsProcessingAlgorithm):
     def icon(self):
         return pylusatq_icon()
 
-    def tr(self, string, context=''):
-        if context == '':
+    def tr(self, string, context=""):
+        if context == "":
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
 
@@ -72,7 +70,7 @@ class LinearRescale(QgsProcessingAlgorithm):
         return self.tr("Rescale Field Linearly")
 
     def shortHelpString(self):
-        html_doc = '''
+        html_doc = """
         <p>Rescale values in a field into a new bound.</p>
 
         <h3>Input layer</h3>
@@ -107,7 +105,7 @@ class LinearRescale(QgsProcessingAlgorithm):
 
         <h3>Output layer</h3>
         <p>Output vector layer</p>
-        '''
+        """
         return html_doc
 
     def createInstance(self):
@@ -120,80 +118,90 @@ class LinearRescale(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.INPUT,
-                self.tr('Input layer'),
-                types=[QgsProcessing.TypeVectorAnyGeometry]
+                self.tr("Input layer"),
+                types=[QgsProcessing.TypeVectorAnyGeometry],
             )
         )
         self.addParameter(
             QgsProcessingParameterField(
                 self.INPUT_FIELD,
-                self.tr('Field to rescale'),
+                self.tr("Field to rescale"),
                 parentLayerParameterName=self.INPUT,
-                type=QgsProcessingParameterField.Numeric
+                type=QgsProcessingParameterField.Numeric,
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
                 name=self.START,
-                description=self.tr('Start value for rescaling'),
+                description=self.tr("Start value for rescaling"),
                 type=QgsProcessingParameterNumber.Double,
-                optional=True
+                optional=True,
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
                 name=self.END,
-                description=self.tr('End value for rescaling'),
+                description=self.tr("End value for rescaling"),
                 type=QgsProcessingParameterNumber.Double,
-                optional=True
+                optional=True,
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.NEW_MIN,
-                self.tr('New minimum'),
+                self.tr("New minimum"),
                 optional=True,
-                defaultValue=1
+                defaultValue=1,
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.NEW_MAX,
-                self.tr('New maximum'),
+                self.tr("New maximum"),
                 optional=True,
-                defaultValue=9
+                defaultValue=9,
             )
         )
         self.addParameter(
             QgsProcessingParameterString(
-                self.OUTPUT_FIELD,
-                self.tr('Output field name')
+                self.OUTPUT_FIELD, self.tr("Output field name")
             )
         )
         self.addParameter(
             QgsProcessingParameterVectorDestination(
-                self.OUTPUT,
-                self.tr('Output layer')
+                self.OUTPUT, self.tr("Output layer")
             )
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        input_lyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
-        input_clm = self.parameterAsString(parameters, self.INPUT_FIELD, context)
+        input_lyr = self.parameterAsVectorLayer(
+            parameters, self.INPUT, context
+        )
+        input_clm = self.parameterAsString(
+            parameters, self.INPUT_FIELD, context
+        )
         start = parameters[self.START]
         end = parameters[self.END]
         output_min = self.parameterAsDouble(parameters, self.NEW_MIN, context)
         output_max = self.parameterAsDouble(parameters, self.NEW_MAX, context)
-        output_clm = self.parameterAsString(parameters, self.OUTPUT_FIELD, context)
-        output_file = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        output_clm = self.parameterAsString(
+            parameters, self.OUTPUT_FIELD, context
+        )
+        output_file = self.parameterAsOutputLayer(
+            parameters, self.OUTPUT, context
+        )
 
-        sys.path.insert(1, os.path.dirname(os.path.realpath(__file__)))
-        from pylusatq_utils import PyLUSATQUtils
+        from ..pylusatq_utils import PyLUSATQUtils
 
         input_gdf = PyLUSATQUtils.vector_to_gdf(input_lyr)
         output = rescale.linear(
-            input_gdf, input_clm, output_clm, start, end,
-            output_min, output_max
+            input_gdf,
+            input_clm,
+            output_clm,
+            start,
+            end,
+            output_min,
+            output_max,
         )
 
         output.to_file(output_file)

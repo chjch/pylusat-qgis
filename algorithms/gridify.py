@@ -1,16 +1,13 @@
-import sys
-
 from PyQt5.QtCore import QCoreApplication
-from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterVectorDestination)
+from qgis.core import (
+    QgsProcessing,
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterVectorDestination,
+)
 from pylusat.geotools import gridify
-import os
-
-sys.path.append("..")
-
-from pylusatq_utils import pylusatq_icon
+from ..pylusatq_utils import pylusatq_icon
 
 
 class Gridify(QgsProcessingAlgorithm):
@@ -24,8 +21,8 @@ class Gridify(QgsProcessingAlgorithm):
     def icon(self):
         return pylusatq_icon()
 
-    def tr(self, string, context=''):  # method to translate strings
-        if context == '':
+    def tr(self, string, context=""):  # method to translate strings
+        if context == "":
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
 
@@ -54,73 +51,59 @@ class Gridify(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.INPUT,
-                self.tr('Input layer'),
-                types=[QgsProcessing.TypeVectorAnyGeometry]
+                self.tr("Input layer"),
+                types=[QgsProcessing.TypeVectorAnyGeometry],
             )
         )
 
         self.addParameter(
             QgsProcessingParameterNumber(
-                self.CELL_X,
-                self.tr('Cell size on the x-axis')
+                self.CELL_X, self.tr("Cell size on the x-axis")
             )
         )
 
         self.addParameter(
             QgsProcessingParameterNumber(
-                self.CELL_Y,
-                self.tr('Cell size on the y-axis')
+                self.CELL_Y, self.tr("Cell size on the y-axis")
             )
         )
 
         self.addParameter(
             QgsProcessingParameterNumber(
-                self.N_COLS,
-                self.tr('Number of columns')
+                self.N_COLS, self.tr("Number of columns")
             )
         )
 
         self.addParameter(
             QgsProcessingParameterNumber(
-                self.N_ROWS,
-                self.tr('Number of rows')
+                self.N_ROWS, self.tr("Number of rows")
             )
         )
 
         self.addParameter(
             QgsProcessingParameterVectorDestination(
-                self.OUTPUT,
-                self.tr('Output grid')
+                self.OUTPUT, self.tr("Output grid")
             )
         )
 
     def processAlgorithm(self, parameters, context, feedback):  # processing
-        input_lyr = self.parameterAsVectorLayer(parameters,
-                                                 self.INPUT,
-                                                 context)
-        in_cell_x = self.parameterAsInt(parameters,
-                                       self.CELL_X,
-                                       context)
-        in_cell_y = self.parameterAsInt(parameters,
-                                        self.CELL_Y,
-                                        context)
-        in_cols = self.parameterAsInt(parameters,
-                                      self.N_COLS,
-                                      context)
-        in_rows = self.parameterAsInt(parameters,
-                                      self.N_ROWS,
-                                      context)
-        sys.path.insert(1, os.path.dirname(os.path.realpath(__file__)))
-        from pylusatq_utils import PyLUSATQUtils
-                
+        input_lyr = self.parameterAsVectorLayer(
+            parameters, self.INPUT, context
+        )
+        in_cell_x = self.parameterAsInt(parameters, self.CELL_X, context)
+        in_cell_y = self.parameterAsInt(parameters, self.CELL_Y, context)
+        in_cols = self.parameterAsInt(parameters, self.N_COLS, context)
+        in_rows = self.parameterAsInt(parameters, self.N_ROWS, context)
+        from ..pylusatq_utils import PyLUSATQUtils
+
         input_gdf = PyLUSATQUtils.vector_to_gdf(input_lyr)
 
         out_gdf = gridify(input_gdf, in_cell_x, in_cell_y, in_cols, in_rows)
 
-        out_path = self.parameterAsOutputLayer(parameters,
-                                               self.OUTPUT,
-                                               context)
-        
+        out_path = self.parameterAsOutputLayer(
+            parameters, self.OUTPUT, context
+        )
+
         out_layer = out_gdf.to_file(out_path)
 
         return {self.OUTPUT: out_layer}

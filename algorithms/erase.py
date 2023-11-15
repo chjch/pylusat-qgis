@@ -1,12 +1,9 @@
-import sys
-import os
 from PyQt5.QtCore import QCoreApplication
 from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorDestination)
 from pylusat import geotools
 
-sys.path.append("..")
 
 class Erase(QgsProcessingAlgorithm):
     INPUT = "INPUT"
@@ -78,8 +75,7 @@ class Erase(QgsProcessingAlgorithm):
         erase_lyr = self.parameterAsVectorLayer(parameters, self.ERASE, context)
         output_file = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
-        sys.path.insert(1, os.path.dirname(os.path.realpath(__file__)))
-        from pylusatq_utils import PyLUSATQUtils
+        from ..pylusatq_utils import PyLUSATQUtils
 
         input_gdf = PyLUSATQUtils.vector_to_gdf(input_lyr)
         erase_gdf = PyLUSATQUtils.vector_to_gdf(erase_lyr)

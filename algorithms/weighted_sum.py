@@ -2,7 +2,7 @@
 
 """
 /***************************************************************************
- PyLUSATQGIS
+ PyLUSATQ
  -----------
  The QGIS plugin for the PyLUSAT package.
  ------------
@@ -21,37 +21,35 @@
  ***************************************************************************/
 """
 
-__author__ = 'Changjie chen'
-__date__ = '2021-10-02'
-__copyright__ = '(C) 2021 by Changjie chen'
+__author__ = "Changjie chen"
+__date__ = "2021-10-02"
+__copyright__ = "(C) 2021 by Changjie chen"
 
-import sys
-import os
 from PyQt5.QtCore import QCoreApplication
-from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterVectorDestination,
-                       QgsProcessingParameterField,
-                       QgsProcessingParameterString)
+from qgis.core import (
+    QgsProcessing,
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterVectorDestination,
+    QgsProcessingParameterField,
+    QgsProcessingParameterString,
+)
 from pylusat import utils
-
-sys.path.append("..")
-
-from pylusatq_utils import pylusatq_icon
+from ..pylusatq_utils import pylusatq_icon
 
 
 class WeightedSum(QgsProcessingAlgorithm):
     INPUT = "INPUT"
     FIELDS = "FIELDS"
-    WEIGHTS = 'WEIGHTS'
+    WEIGHTS = "WEIGHTS"
     OUTPUT_COLUMN = "OUTPUT_COLUMN"
     OUTPUT = "WeightedSum"
 
     def icon(self):
         return pylusatq_icon()
 
-    def tr(self, string, context=''):
-        if context == '':
+    def tr(self, string, context=""):
+        if context == "":
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
 
@@ -64,14 +62,14 @@ class WeightedSum(QgsProcessingAlgorithm):
     def __init__(self):
         super().__init__()
         self.op_option = (
-            ('Intersects', self.tr('Intersects')),
-            ('Contains', self.tr('Contains')),
-            ('Within', self.tr('Within'))
+            ("Intersects", self.tr("Intersects")),
+            ("Contains", self.tr("Contains")),
+            ("Within", self.tr("Within")),
         )
         self.how_option = (
-            ('Inner', self.tr('Inner')),
-            ('Left', self.tr('Left')),
-            ('Right', self.tr('Right'))
+            ("Inner", self.tr("Inner")),
+            ("Left", self.tr("Left")),
+            ("Right", self.tr("Right")),
         )
 
     def name(self):
@@ -81,7 +79,7 @@ class WeightedSum(QgsProcessingAlgorithm):
         return self.tr("Weighted Sum of Fields")
 
     def shortHelpString(self):
-        html_doc = '''
+        html_doc = """
         <p>Calculate a weighted sum over a set of existing fields within the \
         input layer.</p>
 
@@ -100,7 +98,7 @@ class WeightedSum(QgsProcessingAlgorithm):
 
         <h3>Output field</h3>
         <p>Output vector layer</p>
-        '''
+        """
         return html_doc
 
     def createInstance(self):
@@ -110,53 +108,58 @@ class WeightedSum(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.INPUT,
-                self.tr('Input layer'),
-                types=[QgsProcessing.TypeVectorAnyGeometry]
+                self.tr("Input layer"),
+                types=[QgsProcessing.TypeVectorAnyGeometry],
             )
         )
         self.addParameter(
             QgsProcessingParameterField(
                 self.FIELDS,
-                self.tr('Fields'),
+                self.tr("Fields"),
                 parentLayerParameterName=self.INPUT,
                 type=QgsProcessingParameterField.Numeric,
-                allowMultiple=True
+                allowMultiple=True,
             )
         )
         self.addParameter(
             QgsProcessingParameterString(
                 self.WEIGHTS,
-                self.tr('Weights (equals to the number of fields)')
+                self.tr("Weights (equals to the number of fields)"),
             )
         )
         self.addParameter(
             QgsProcessingParameterString(
-                self.OUTPUT_COLUMN,
-                self.tr('Output field name')
+                self.OUTPUT_COLUMN, self.tr("Output field name")
             )
         )
         self.addParameter(
             QgsProcessingParameterVectorDestination(
-                self.OUTPUT,
-                self.tr('Output layer')
+                self.OUTPUT, self.tr("Output layer")
             )
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        input_lyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        input_lyr = self.parameterAsVectorLayer(
+            parameters, self.INPUT, context
+        )
         fields = self.parameterAsFields(parameters, self.FIELDS, context)
         weights = self.parameterAsString(parameters, self.WEIGHTS, context)
-        output_clm = self.parameterAsString(parameters, self.OUTPUT_COLUMN, context)
-        output_file = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        output_clm = self.parameterAsString(
+            parameters, self.OUTPUT_COLUMN, context
+        )
+        output_file = self.parameterAsOutputLayer(
+            parameters, self.OUTPUT, context
+        )
 
-        sys.path.insert(1, os.path.dirname(os.path.realpath(__file__)))
-        from pylusatq_utils import PyLUSATQUtils, StringParameterNumberList
+        from ..pylusatq_utils import PyLUSATQUtils, StringParameterNumberList
 
         input_gdf = PyLUSATQUtils.vector_to_gdf(input_lyr)
-        weights = StringParameterNumberList('weights', weights).as_number_list
+        weights = StringParameterNumberList("weights", weights).as_number_list
         if len(fields) != len(weights):
-            raise ValueError('Number of fields does not match the number of '
-                             'weights provided.')
+            raise ValueError(
+                "Number of fields does not match the number of "
+                "weights provided."
+            )
         fields_weights = dict(zip(fields, weights))
 
         input_gdf[output_clm] = utils.weighted_sum(input_gdf, fields_weights)

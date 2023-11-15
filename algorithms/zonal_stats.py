@@ -21,39 +21,37 @@
  ***************************************************************************/
 """
 
-__author__ = 'Changjie chen'
-__date__ = '2021-10-02'
-__copyright__ = '(C) 2021 by Changjie chen'
+__author__ = "Changjie chen"
+__date__ = "2021-10-02"
+__copyright__ = "(C) 2021 by Changjie chen"
 
-import sys
-import os
 from PyQt5.QtCore import QCoreApplication
-from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingParameterString,
-                       QgsProcessingParameterVectorDestination)
+from qgis.core import (
+    QgsProcessing,
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterString,
+    QgsProcessingParameterVectorDestination,
+)
 from pylusat import zonal
-
-sys.path.append("..")
-
-from pylusatq_utils import pylusatq_icon
+from ..pylusatq_utils import pylusatq_icon
 
 
 class ZonalStats(QgsProcessingAlgorithm):
-    INPUT = 'INPUT'
-    RASTER = 'RASTER'
-    STATS = 'STATS'
+    INPUT = "INPUT"
+    RASTER = "RASTER"
+    STATS = "STATS"
     OUTPUT_COLUMN_PREFIX = "OUTPUT_COLUMN_PREFIX"
-    NODATA = 'NODATA'
-    OUTPUT = 'ZonalStats'
+    NODATA = "NODATA"
+    OUTPUT = "ZonalStats"
 
     def icon(self):
         return pylusatq_icon()
 
-    def tr(self, string, context=''):
-        if context == '':
+    def tr(self, string, context=""):
+        if context == "":
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
 
@@ -61,16 +59,16 @@ class ZonalStats(QgsProcessingAlgorithm):
         return self.tr(self.groupId().capitalize())
 
     def groupId(self):
-        return 'overlay'
+        return "overlay"
 
     def name(self):
-        return 'zonalstats'
+        return "zonalstats"
 
     def displayName(self):
-        return self.tr('Zonal Statistics')
+        return self.tr("Zonal Statistics")
 
     def shortHelpString(self):
-        html_doc = '''
+        html_doc = """
         <p>Calculate statistics on values of raster within the zones of \
         another dataset.</p>
 
@@ -132,7 +130,7 @@ class ZonalStats(QgsProcessingAlgorithm):
 
         <h3>Output layer</h3>
         <p>Output vector layer</p>
-        '''
+        """
         return html_doc
 
     def createInstance(self):
@@ -145,60 +143,64 @@ class ZonalStats(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.INPUT,
-                self.tr('Input layer'),
-                types=[QgsProcessing.TypeVectorPolygon]
+                self.tr("Input layer"),
+                types=[QgsProcessing.TypeVectorPolygon],
             )
         )
         self.addParameter(
             QgsProcessingParameterRasterLayer(
                 self.RASTER,
-                self.tr('Raster layer'),
+                self.tr("Raster layer"),
             )
         )
         self.addParameter(
             QgsProcessingParameterString(
-                self.STATS,
-                self.tr('Types of statistics (separated by space)')
+                self.STATS, self.tr("Types of statistics (separated by space)")
             )
         )
         self.addParameter(
             QgsProcessingParameterString(
-                self.OUTPUT_COLUMN_PREFIX,
-                self.tr('Output column prefix')
+                self.OUTPUT_COLUMN_PREFIX, self.tr("Output column prefix")
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.NODATA,
-                self.tr('No data value'),
+                self.tr("No data value"),
                 type=QgsProcessingParameterNumber.Integer,
-                optional=True
+                optional=True,
             )
         )
         self.addParameter(
             QgsProcessingParameterVectorDestination(
                 self.OUTPUT,
-                self.tr('Output layer'),
+                self.tr("Output layer"),
             )
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        input_lyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
-        raster_lyr = self.parameterAsRasterLayer(parameters, self.RASTER, context)
+        input_lyr = self.parameterAsVectorLayer(
+            parameters, self.INPUT, context
+        )
+        raster_lyr = self.parameterAsRasterLayer(
+            parameters, self.RASTER, context
+        )
         stats = self.parameterAsString(parameters, self.STATS, context)
-        output_clm_prefix = self.parameterAsString(parameters,
-                                                   self.OUTPUT_COLUMN_PREFIX,
-                                                   context)
+        output_clm_prefix = self.parameterAsString(
+            parameters, self.OUTPUT_COLUMN_PREFIX, context
+        )
         nodata = parameters[self.NODATA]
-        output_file = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        output_file = self.parameterAsOutputLayer(
+            parameters, self.OUTPUT, context
+        )
 
-        sys.path.insert(1, os.path.dirname(os.path.realpath(__file__)))
-        from pylusatq_utils import PyLUSATQUtils
+        from ..pylusatq_utils import PyLUSATQUtils
 
         input_gdf = PyLUSATQUtils.vector_to_gdf(input_lyr)
         raster_path = raster_lyr.dataProvider().dataSourceUri()
 
-        output = zonal.zonal_stats_raster(input_gdf, raster_path, stats,
-                                          output_clm_prefix, nodata)
+        output = zonal.zonal_stats_raster(
+            input_gdf, raster_path, stats, output_clm_prefix, nodata
+        )
         output.to_file(output_file, driver="GPKG")
         return {self.OUTPUT: output_file}

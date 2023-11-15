@@ -21,73 +21,71 @@
  ***************************************************************************/
 """
 
-__author__ = 'Changjie chen'
-__date__ = '2021-10-02'
-__copyright__ = '(C) 2021 by Changjie chen'
+__author__ = "Changjie chen"
+__date__ = "2021-10-02"
+__copyright__ = "(C) 2021 by Changjie chen"
 
 # This will get replaced with a git SHA1 when you do a git archive
 
-__revision__ = '$Format:%H$'
-
-import sys
+__revision__ = "$Format:%H$"
 
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
-from qgis.core import (QgsProcessing, QgsField, QgsFeature, QgsFeatureSink,
-                       QgsProcessingAlgorithm,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterBoolean,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingParameterField,
-                       QgsProcessingParameterFeatureSink)
-
-sys.path.append("..")
-
-from pylusatq_utils import pylusatq_icon
+from qgis.core import (
+    QgsProcessing,
+    QgsField,
+    QgsFeature,
+    QgsFeatureSink,
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterBoolean,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterField,
+    QgsProcessingParameterFeatureSink,
+)
+from ..pylusatq_utils import pylusatq_icon
 
 
 class IdentifyByRanking(QgsProcessingAlgorithm):
-
-    INPUT = 'INPUT'
-    INPUT_FIELD = 'INPUT_FIELD'
-    FROM_TOP = 'FROM_TOP'
-    NUMBER = 'NUMBER'
-    OUTPUT = 'OUTPUT'
+    INPUT = "INPUT"
+    INPUT_FIELD = "INPUT_FIELD"
+    FROM_TOP = "FROM_TOP"
+    NUMBER = "NUMBER"
+    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config):
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.INPUT,
-                self.tr('Input layer'),
-                types=[QgsProcessing.TypeVectorAnyGeometry]
+                self.tr("Input layer"),
+                types=[QgsProcessing.TypeVectorAnyGeometry],
             )
         )
         self.addParameter(
             QgsProcessingParameterField(
                 self.INPUT_FIELD,
-                self.tr('Base field'),
-                parentLayerParameterName=self.INPUT
+                self.tr("Base field"),
+                parentLayerParameterName=self.INPUT,
             )
         )
         self.addParameter(
             QgsProcessingParameterBoolean(
                 self.FROM_TOP,
-                self.tr('From top of the ranking'),
-                defaultValue=True
+                self.tr("From top of the ranking"),
+                defaultValue=True,
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.NUMBER,
-                self.tr('Number of records'),
+                self.tr("Number of records"),
                 type=QgsProcessingParameterNumber.Integer,
                 defaultValue=5,
-                optional=True
+                optional=True,
             )
         )
         self.addParameter(
             QgsProcessingParameterFeatureSink(
-                self.OUTPUT,
-                self.tr('Rank Identified')
+                self.OUTPUT, self.tr("Rank Identified")
             )
         )
 
@@ -96,22 +94,27 @@ class IdentifyByRanking(QgsProcessingAlgorithm):
         # to uniquely identify the feature sink, and must be included in the
         # dictionary returned by the processAlgorithm function.
         source = self.parameterAsSource(parameters, self.INPUT, context)
-        base_clm = self.parameterAsString(parameters, self.INPUT_FIELD,
-                                          context)
+        base_clm = self.parameterAsString(
+            parameters, self.INPUT_FIELD, context
+        )
         if_top = self.parameterAsBoolean(parameters, self.FROM_TOP, context)
         n = self.parameterAsInt(parameters, self.NUMBER, context)
 
-        output_clm = f'TOP{n}' if if_top else f'LAST{n}'
+        output_clm = f"TOP{n}" if if_top else f"LAST{n}"
 
         # get fields of input layer return a list of fields
         source_fields = source.fields()
         # append the new field to the existing fields
         source_fields.append(QgsField(output_clm, QVariant.Int))
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT,
-                                               context, source_fields,
-                                               source.wkbType(),
-                                               source.sourceCrs())
+        (sink, dest_id) = self.parameterAsSink(
+            parameters,
+            self.OUTPUT,
+            context,
+            source_fields,
+            source.wkbType(),
+            source.sourceCrs(),
+        )
 
         # Compute the number of steps to display within the progress bar
         if source.featureCount():
@@ -119,9 +122,11 @@ class IdentifyByRanking(QgsProcessingAlgorithm):
         else:
             total = 0
 
-        features = sorted(source.getFeatures(),
-                          key=lambda feat: feat[base_clm],
-                          reverse=if_top)
+        features = sorted(
+            source.getFeatures(),
+            key=lambda feat: feat[base_clm],
+            reverse=if_top,
+        )
 
         n_fid = [f.id() for f in features[:n]]
 
@@ -154,7 +159,7 @@ class IdentifyByRanking(QgsProcessingAlgorithm):
         lowercase alphanumeric characters only and no spaces or other
         formatting characters.
         """
-        return 'Identify records by ranking'
+        return "Identify records by ranking"
 
     def displayName(self):
         """
@@ -178,13 +183,13 @@ class IdentifyByRanking(QgsProcessingAlgorithm):
         contain lowercase alphanumeric characters only and no spaces or other
         formatting characters.
         """
-        return 'selection'
+        return "selection"
 
     def icon(self):
         return pylusatq_icon()
 
     def tr(self, string):
-        return QCoreApplication.translate('Processing', string)
+        return QCoreApplication.translate("Processing", string)
 
     def createInstance(self):
         return IdentifyByRanking()

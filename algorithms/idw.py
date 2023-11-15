@@ -2,7 +2,7 @@
 
 """
 /***************************************************************************
- PyLUSATQGIS
+ PyLUSATQ
  -----------
  The QGIS plugin for the PyLUSAT package.
  ------------
@@ -21,23 +21,20 @@
  ***************************************************************************/
 """
 
-
-import sys
-import os
 from PyQt5.QtCore import QCoreApplication
-from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterVectorDestination,
-                       QgsProcessingParameterField,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingParameterDistance,
-                       QgsProcessingParameterEnum,
-                       QgsProcessingParameterString)
+from qgis.core import (
+    QgsProcessing,
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterVectorDestination,
+    QgsProcessingParameterField,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterDistance,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterString,
+)
 from pylusat import interpolate
-
-sys.path.append("..")
-
-from pylusatq_utils import pylusatq_icon
+from ..pylusatq_utils import pylusatq_icon
 
 
 class InverseDistanceWeighting(QgsProcessingAlgorithm):
@@ -54,8 +51,8 @@ class InverseDistanceWeighting(QgsProcessingAlgorithm):
     def icon(self):
         return pylusatq_icon()
 
-    def tr(self, string, context=''):
-        if context == '':
+    def tr(self, string, context=""):
+        if context == "":
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
 
@@ -72,7 +69,7 @@ class InverseDistanceWeighting(QgsProcessingAlgorithm):
         return self.tr("Inverse Distance Weighting")
 
     def shortHelpString(self):
-        html_doc = '''
+        html_doc = """
         <p>This function implements an `IDW interpolation`. The power parameter \
         dictates how fast the influence to a given location by its nearby objects decays. \
         `idw_cv`, a k-fold cross validation method is offered to determine the \
@@ -107,7 +104,7 @@ class InverseDistanceWeighting(QgsProcessingAlgorithm):
 
         <h3>Output Layer</h3>
         <p>Output vector layer.</p>
-        '''
+        """
         return html_doc
 
     def createInstance(self):
@@ -116,119 +113,121 @@ class InverseDistanceWeighting(QgsProcessingAlgorithm):
     def __init__(self):
         super().__init__()
         self.data_type = (
-            ('Integer', self.tr('Integer')),
-            ('Float', self.tr('Float'))
+            ("Integer", self.tr("Integer")),
+            ("Float", self.tr("Float")),
         )
 
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.INPUT,
-                self.tr('Input layer'),
-                types=[QgsProcessing.TypeVectorAnyGeometry]
+                self.tr("Input layer"),
+                types=[QgsProcessing.TypeVectorAnyGeometry],
             )
         )
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.INTERPOLATE,
-                self.tr('Interpolation layer'),
-                types=[QgsProcessing.TypeVectorAnyGeometry]
+                self.tr("Interpolation layer"),
+                types=[QgsProcessing.TypeVectorAnyGeometry],
             )
         )
         self.addParameter(
             QgsProcessingParameterField(
                 self.INTERPOLATE_FIELD,
-                self.tr('Interpolating field'),
+                self.tr("Interpolating field"),
                 parentLayerParameterName=self.INTERPOLATE,
-                type=QgsProcessingParameterField.Numeric
+                type=QgsProcessingParameterField.Numeric,
             )
         )
         power = QgsProcessingParameterNumber(
             self.POWER,
-            self.tr('Power parameter for interpolation'),
+            self.tr("Power parameter for interpolation"),
             type=QgsProcessingParameterNumber.Double,
             defaultValue=2,
-            optional=True
+            optional=True,
         )
-        power.setMetadata({
-            'widget_wrapper': {
-                'decimals': 2
-            }
-        })
+        power.setMetadata({"widget_wrapper": {"decimals": 2}})
         self.addParameter(power)
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.NUMBER_NEIGHBOR,
-                self.tr('Number of neighbors'),
+                self.tr("Number of neighbors"),
                 type=QgsProcessingParameterNumber.Integer,
                 defaultValue=12,
-                optional=True
+                optional=True,
             )
         )
         search_radius = QgsProcessingParameterDistance(
             self.SEARCH_RADIUS,
-            self.tr('Search radius'),
+            self.tr("Search radius"),
             defaultValue=None,
             parentParameterName=self.INTERPOLATE,
-            optional=True
+            optional=True,
         )
-        search_radius.setMetadata({
-            'widget_wrapper': {
-                'decimals': 2
-            }
-        })
+        search_radius.setMetadata({"widget_wrapper": {"decimals": 2}})
         self.addParameter(search_radius)
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.DATA_TYPE,
-                self.tr('Output data type'),
+                self.tr("Output data type"),
                 options=[dtype[1] for dtype in self.data_type],
                 defaultValue=1,
-                optional=True
+                optional=True,
             )
         )
         self.addParameter(
             QgsProcessingParameterString(
                 name=self.OUTPUT_FIELD,
-                description=self.tr('Output field name'),
+                description=self.tr("Output field name"),
             )
         )
         self.addParameter(
             QgsProcessingParameterVectorDestination(
-                self.OUTPUT,
-                self.tr('Output layer')
+                self.OUTPUT, self.tr("Output layer")
             )
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        input_lyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
-        interpolate_lyr = self.parameterAsVectorLayer(parameters,
-                                                      self.INTERPOLATE,
-                                                      context)
-        interpolate_clm = self.parameterAsString(parameters,
-                                                 self.INTERPOLATE_FIELD,
-                                                 context)
+        input_lyr = self.parameterAsVectorLayer(
+            parameters, self.INPUT, context
+        )
+        interpolate_lyr = self.parameterAsVectorLayer(
+            parameters, self.INTERPOLATE, context
+        )
+        interpolate_clm = self.parameterAsString(
+            parameters, self.INTERPOLATE_FIELD, context
+        )
         power = self.parameterAsDouble(parameters, self.POWER, context)
-        n_neighbor = self.parameterAsInt(parameters, self.NUMBER_NEIGHBOR,
-                                         context)
-        search_radius = self.parameterAsDouble(parameters, self.SEARCH_RADIUS,
-                                               context)
+        n_neighbor = self.parameterAsInt(
+            parameters, self.NUMBER_NEIGHBOR, context
+        )
+        search_radius = self.parameterAsDouble(
+            parameters, self.SEARCH_RADIUS, context
+        )
         data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
-        output_clm = self.parameterAsString(parameters, self.OUTPUT_FIELD, context)
-        output_file = self.parameterAsOutputLayer(parameters, self.OUTPUT,
-                                                  context)
+        output_clm = self.parameterAsString(
+            parameters, self.OUTPUT_FIELD, context
+        )
+        output_file = self.parameterAsOutputLayer(
+            parameters, self.OUTPUT, context
+        )
 
-        sys.path.insert(1, os.path.dirname(os.path.realpath(__file__)))
-        from pylusatq_utils import PyLUSATQUtils
+        from ..pylusatq_utils import PyLUSATQUtils
 
         feedback.pushInfo(str(search_radius))
 
         input_gdf = PyLUSATQUtils.vector_to_gdf(input_lyr)
         interpolate_gdf = PyLUSATQUtils.vector_to_gdf(interpolate_lyr)
         data_type = int if data_type == 0 else float
-        input_gdf[output_clm] = interpolate.idw(input_gdf, interpolate_gdf,
-                                                interpolate_clm, power,
-                                                n_neighbor, search_radius,
-                                                dtype=data_type)
+        input_gdf[output_clm] = interpolate.idw(
+            input_gdf,
+            interpolate_gdf,
+            interpolate_clm,
+            power,
+            n_neighbor,
+            search_radius,
+            dtype=data_type,
+        )
         input_gdf.to_file(output_file)
         return {self.OUTPUT: output_file}
