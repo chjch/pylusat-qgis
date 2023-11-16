@@ -22,8 +22,8 @@
 """
 
 __author__ = 'Changjie chen'
-__date__ = '2022-11-02'
-__copyright__ = '(C) 2022 by Changjie chen'
+__date__ = '2023-11-12'
+__copyright__ = '(C) 2023 by Changjie chen'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
