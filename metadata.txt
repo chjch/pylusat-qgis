@@ -7,7 +7,7 @@ name=PyLUSATQ
 qgisMinimumVersion=3.0
 qgisMaximumVersion=3.98
 description=The plugin allows to perform Land Use Suitability Analysis following vector-based routines.
-version=0.2.2
+version=0.3.0
 author=Changjie chen
 email=chj.chen@ufl.edu
 
