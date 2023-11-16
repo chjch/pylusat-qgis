@@ -1,5 +1,6 @@
 from pathlib import Path
 import zipfile
+from pylusatq_version import __version__
 
 
 def create_zip_with_files(target_dir, sources, version, root_dir="pylusatq"):
@@ -33,7 +34,9 @@ def create_zip_with_files(target_dir, sources, version, root_dir="pylusatq"):
                         zip_file.write(file_to_zip, str(relative_path))
     zip_file_name.rename(target_path / f"{root_dir}-{version}.zip")
 
-    print(f"All files from {', '.join(sources)} added to {zip_file_name}")
+    print(
+        f"Version {__version__}: {', '.join(sources)} added to {zip_file_name}"
+    )
 
 
 if __name__ == "__main__":
@@ -49,6 +52,6 @@ if __name__ == "__main__":
     create_zip_with_files(
         Path(__file__).resolve().parent / "pylusatq_all_versions",
         source_dirs + source_files,
-        "0.2.2",
+        __version__,
         root_dir="pylusatq",
     )
